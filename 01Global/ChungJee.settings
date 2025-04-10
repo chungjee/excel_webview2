@@ -1,0 +1,42 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="" GeneratedClassName="ChungJee">
+  <Profiles />
+  <Settings>
+    <Setting Name="strNasHostName" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">http://120.211.170.8:5000</Value>
+    </Setting>
+    <Setting Name="strNasUserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">zhanglj</Value>
+    </Setting>
+    <Setting Name="strNasPassWord" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="con_BASE_DATA" Type="System.String" Scope="User">
+      <Value Profile="(Default)">基础数据</Value>
+    </Setting>
+    <Setting Name="strNasSid" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="con_COMPANY_INFO" Type="System.String" Scope="User">
+      <Value Profile="(Default)">单位信息表</Value>
+    </Setting>
+    <Setting Name="con_NAS_HOME_FOLDERNAME" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">/home</Value>
+    </Setting>
+    <Setting Name="con_START_DATE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">开始日期：</Value>
+    </Setting>
+    <Setting Name="con_END_DATE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">结束日期：</Value>
+    </Setting>
+    <Setting Name="strTabName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">数据聚合</Value>
+    </Setting>
+    <Setting Name="jsonUrlList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{"data":[{"url":"https://e.dianping.com/couponrecord/queryCouponRecordDetails"},{"url":"https://e.dianping.com/couponrecord/consumeItemsNewDownload"},{"url":"https://e.dianping.com/smartBill/download/downloadLink"}]}</Value>
+    </Setting>
+    <Setting Name="strHomePage" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://e.dianping.com/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
