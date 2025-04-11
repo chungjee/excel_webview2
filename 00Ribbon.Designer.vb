@@ -49,7 +49,6 @@
         Me.btnMeiTuan = Me.Factory.CreateRibbonButton
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.btnTaskPanel = Me.Factory.CreateRibbonButton
-        Me.btnSystemSetup = Me.Factory.CreateRibbonButton
         Me.Tab1.SuspendLayout()
         Me.tab_WebView.SuspendLayout()
         Me.Group2.SuspendLayout()
@@ -94,13 +93,6 @@
         Me.btnTaskPanel.Name = "btnTaskPanel"
         Me.btnTaskPanel.ShowImage = True
         '
-        'btnSystemSetup
-        '
-        Me.btnSystemSetup.Label = "系统设置"
-        Me.btnSystemSetup.Name = "btnSystemSetup"
-        Me.btnSystemSetup.OfficeImageId = "WbsDefineCode"
-        Me.btnSystemSetup.ShowImage = True
-        '
         'Ribbon
         '
         Me.Name = "Ribbon"
@@ -108,7 +100,6 @@
         'Ribbon.OfficeMenu
         '
         Me.OfficeMenu.Items.Add(Me.btnTaskPanel)
-        Me.OfficeMenu.Items.Add(Me.btnSystemSetup)
         Me.RibbonType = "Microsoft.Excel.Workbook"
         Me.Tabs.Add(Me.Tab1)
         Me.Tabs.Add(Me.tab_WebView)
@@ -128,7 +119,6 @@
     Friend WithEvents btnMeiTuan As Microsoft.Office.Tools.Ribbon.RibbonButton
     Friend WithEvents ImageList1 As Windows.Forms.ImageList
     Friend WithEvents btnTaskPanel As Microsoft.Office.Tools.Ribbon.RibbonButton
-    Friend WithEvents btnSystemSetup As Microsoft.Office.Tools.Ribbon.RibbonButton
 End Class
 
 Partial Class ThisRibbonCollection

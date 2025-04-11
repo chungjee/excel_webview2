@@ -10,12 +10,13 @@ Public Class ThisAddIn
     Public tpAddinWebviewTaskPanel As CustomTaskPane
     Public tpConstomWebVieTaskPanel As WebviewTaskPaneControl
     Public jsonUrlList As Newtonsoft.Json.Linq.JObject
+    Public dicResponseUrlList As New Dictionary(Of String, System.Collections.Generic.List(Of String))
     Public Sub ThisAddIn_Startup() Handles Me.Startup
-
         tpConstomWebVieTaskPanel = New WebviewTaskPaneControl()
         tpAddinWebviewTaskPanel = Me.CustomTaskPanes.Add(tpConstomWebVieTaskPanel, My.ChungJee.Default.strTabName)
         initializeAsync()
         jsonUrlList = Newtonsoft.Json.Linq.JObject.Parse(My.ChungJee.Default.jsonUrlList)
+        dicResponseUrlList = MdlLoad.jsonResponseUrlListToArrayList(Globals.ThisAddIn.jsonUrlList.Item("data"))
     End Sub
 
     Private Sub ThisAddIn_Shutdown(sender As Object, e As EventArgs) Handles Me.Shutdown

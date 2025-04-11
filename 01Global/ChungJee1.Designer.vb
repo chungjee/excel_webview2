@@ -102,8 +102,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("/home")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("/home/")>  _
         Public Property con_NAS_HOME_FOLDERNAME() As String
             Get
                 Return CType(Me("con_NAS_HOME_FOLDERNAME"),String)
@@ -173,6 +172,24 @@ Namespace My
             End Get
             Set
                 Me("strHomePage") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("{""data"":[{""url"":""https://e.dianping.com/couponrecord/queryCouponRecordDetails"",""b"& _ 
+            "tnForward"":""document.getElementsByTagName('iframe')[0].contentDocument.getElemen"& _ 
+            "tsByClassName('anticon anticon-left')[1].click()"",""btnBackward"":""document.getEle"& _ 
+            "mentsByTagName('iframe')[0].contentDocument.getElementsByClassName('anticon anti"& _ 
+            "con-right')[1].click()"",""lbPage"":""document.getElementsByTagName('iframe')[0].con"& _ 
+            "tentDocument.getElementsByClassName('ant-pagination-total-text')[0].innerText""}]"& _ 
+            "}")>  _
+        Public Property btnBottomScript() As String
+            Get
+                Return CType(Me("btnBottomScript"),String)
+            End Get
+            Set
+                Me("btnBottomScript") = value
             End Set
         End Property
     End Class

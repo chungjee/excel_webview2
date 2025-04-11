@@ -20,8 +20,8 @@
     <Setting Name="con_COMPANY_INFO" Type="System.String" Scope="User">
       <Value Profile="(Default)">单位信息表</Value>
     </Setting>
-    <Setting Name="con_NAS_HOME_FOLDERNAME" Type="(Web Service URL)" Scope="User">
-      <Value Profile="(Default)">/home</Value>
+    <Setting Name="con_NAS_HOME_FOLDERNAME" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/home/</Value>
     </Setting>
     <Setting Name="con_START_DATE" Type="System.String" Scope="User">
       <Value Profile="(Default)">开始日期：</Value>
@@ -37,6 +37,9 @@
     </Setting>
     <Setting Name="strHomePage" Type="(Web Service URL)" Scope="User">
       <Value Profile="(Default)">https://e.dianping.com/</Value>
+    </Setting>
+    <Setting Name="btnBottomScript" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{"data":[{"url":"https://e.dianping.com/couponrecord/queryCouponRecordDetails","btnForward":"document.getElementsByTagName('iframe')[0].contentDocument.getElementsByClassName('anticon anticon-left')[1].click()","btnBackward":"document.getElementsByTagName('iframe')[0].contentDocument.getElementsByClassName('anticon anticon-right')[1].click()","lbPage":"document.getElementsByTagName('iframe')[0].contentDocument.getElementsByClassName('ant-pagination-total-text')[0].innerText"}]}</Value>
     </Setting>
   </Settings>
 </SettingsFile>

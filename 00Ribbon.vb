@@ -33,7 +33,7 @@ Public Class Ribbon
 
 
 
-    Private Sub btnSystemSetup_Click(sender As Object, e As RibbonControlEventArgs) Handles btnSystemSetup.Click
+    Private Sub btnSystemSetup_Click(sender As Object, e As RibbonControlEventArgs)
         Dim frmSystemSetup1 As New frmSystemSetup
         frmSystemSetup1.Show()
     End Sub

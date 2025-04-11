@@ -15,15 +15,21 @@ Module MdlLoad
         If InStr(e.Request.Uri, "https://e.dianping.com/couponrecord/consumeItemsNewDownload") Then
             ' xlApp.Run("frmShow")
         End If
-    End Sub '网络资源请求时间
+    End Sub '网络资源请求事件执行程序
     Public Async Sub eventWebResourceResponseReceived(sender As Object, e As CoreWebView2WebResourceResponseReceivedEventArgs)
+        If Globals.ThisAddIn.tpConstomWebVieTaskPanel.MenuItemResponseSwitch.Checked = False Then
+            Return
+            'Dim strFileName As String = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "ResponseSnap" & Now.ToString("yyyyMMddHHmmss") & ".txt")
+            'Using writer As New StreamWriter(strFileName, True)
+            'writer.WriteLine(strResponse)
+            'End Using
+        End If '如果选中响应快照，保存响应数据到临时文件中
         Dim request As CoreWebView2WebResourceRequest = e.Request
         Dim response As CoreWebView2WebResourceResponseView = e.Response
         Dim strRequestUrl As String = request.Uri
         If response.StatusCode <> 200 Then
             Exit Sub
         End If
-
         Dim content As String
         For Each key As JToken In Globals.ThisAddIn.jsonUrlList.Item("data")
             If InStr(strRequestUrl, key.Item("url").Value(Of String)) Then
@@ -34,10 +40,26 @@ Module MdlLoad
                 If content <> "" Then analysisResponseData(content, uriRequest)
                 xlApp.ScreenUpdating = True : xlApp.EnableEvents = True
                 xlApp.Run("frmHidden")
+
+                Return
             End If
         Next
+        '如果选中响应快照，保存响应数据到临时文件中
+        Dim strScript = Globals.ThisAddIn.tpConstomWebVieTaskPanel.tooltxtLable.Text
+        If strScript <> "" Then
+            Try
+                Dim strResult As Object = Await Globals.ThisAddIn.tpConstomWebVieTaskPanel.wvCoreWevview2.ExecuteScriptWithResultAsync(strScript)
+                If strResult.ResultAsJson <> "null" Then
+                    Globals.ThisAddIn.tpConstomWebVieTaskPanel.lbPage.Text = Replace(strResult.ResultAsJson, """", "")
+                Else
+                    Globals.ThisAddIn.tpConstomWebVieTaskPanel.lbPage.Text = "......"
+                End If
+        Catch ex As Exception
+                Debug.WriteLine(ex.Message)
+            End Try
+        End If
 
-    End Sub '网络资源接收事件
+    End Sub '网络资源接收事件执行程序
     Public Sub eventDownloadStarting(sender As Object, e As CoreWebView2DownloadStartingEventArgs)
         MdlLoad.strFileFullName = e.ResultFilePath
         'MsgBox(e.ResultFilePath)
@@ -53,8 +75,7 @@ Module MdlLoad
             xlApp.Run(strVBAFunctionName, strResponse)
             Return True
         Catch ex As Exception
-            Dim objVBModuleComponent As Microsoft.Vbe.Interop.VBComponent
-            Dim strVBModuleName As String
+            Dim objVBModuleComponent As Microsoft.Vbe.Interop.VBComponent, strVBModuleName As String
             If strVBAFunctionName.Length > 30 Then
                 strVBModuleName = strVBAFunctionName.Substring(0, 30)
             Else
@@ -63,39 +84,38 @@ Module MdlLoad
 
             Try
                 objVBModuleComponent = xlApp.ActiveWorkbook.VBProject.VBComponents.Item(strVBModuleName)
-                Try
-                    objVBModuleComponent.CodeModule.AddFromFile(strVBAFunctionName)
-                    xlApp.Run(strVBAFunctionName, strResponse)
-                    System.IO.File.Delete(strVBAFunctionName)
-                    Return True
-                Catch ex5 As Exception
-                    If ex5.Message.Contains("文件未找到") Then
-                        Dim strFileUrl As String, strSid As String
-                        If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                            strFileUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strVBAFunctionName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
-                            strSid = NasModel.nasDownloadFile(strFileUrl, strVBAFunctionName)
-                            If strSid = strVBAFunctionName Then
-                                Try
-                                    objVBModuleComponent.CodeModule.AddFromFile(strVBAFunctionName)
-                                    xlApp.Run(strVBAFunctionName, strResponse)
-                                    Return True
-                                Catch ex6 As Exception
-                                    Debug.WriteLine(ex6.Message)
-                                    Return False
-                                End Try
+                If objVBModuleComponent.CodeModule.CountOfLines = 0 Then
+                    Try
+                        objVBModuleComponent.CodeModule.AddFromFile(strVBAFunctionName)
+                        xlApp.Run(strVBAFunctionName, strResponse)
+                        System.IO.File.Delete(strVBAFunctionName)
+                        Return True
+                    Catch ex5 As Exception
+                        If ex5.Message.Contains("文件未找到") Then
+                            Dim strFileUrl As String, strSid As String
+                            If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
+                                strFileUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strVBAFunctionName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                                strSid = NasModel.nasDownloadFile(strFileUrl, strVBAFunctionName)
+                                If strSid = strVBAFunctionName Then
+                                    Try
+                                        objVBModuleComponent.CodeModule.AddFromFile(strVBAFunctionName)
+                                        xlApp.Run(strVBAFunctionName, strResponse)
+                                        System.IO.File.Delete(strVBAFunctionName)
+                                        Return True
+                                    Catch ex6 As Exception
+                                        Debug.WriteLine(ex6.Message)
+                                    End Try '下载代码文件成功，重新加载VBA模块代码
+                                Else
+                                    Debug.WriteLine("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
+                                End If '如果代码文件下载成功，重新加载VBA模块代码，否则提示下载失败
                             Else
-                                Debug.WriteLine("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                Return False
-                            End If
+                                MsgBox("令牌为空，请重新登录网络存储系统！")
+                            End If '网络存储系统令牌不为空，重新下载代码文件；如果令牌为空，提示重新登录网络存储系统
                         Else
-                            MsgBox("令牌为空，请重新登录网络存储系统！")
-                            Return False
-                        End If
-                    Else
-                        Debug.WriteLine(ex5.Message)
-                        Return False
-                    End If
-                End Try
+                            Debug.WriteLine(ex5.Message)
+                        End If 'VBA工程中已经存在该模块，该模块中的代码为空，重新加载VBA模块代码，代码文件不存在，下载代码文件
+                    End Try 'VBA工程中已经存在该模块，重新加载VBA模块代码
+                End If 'VBA工程中已经存在该模块，该模块中的代码为空，重新加载VBA模块代码，如果代码文件不存在，下载代码文件
             Catch ex1 As Exception
                 If ex1.Message.Contains("不信任") Then
                     Debug.WriteLine(ex1.Message)
@@ -103,8 +123,8 @@ Module MdlLoad
                 End If
                 If ex1.Message.Contains("下标越界") Then
                     With xlApp.ActiveWorkbook.VBProject.VBComponents.Add(Microsoft.Vbe.Interop.vbext_ComponentType.vbext_ct_StdModule)
-                        .Name = strVBModuleName
                         Try
+                            .Name = strVBModuleName
                             .CodeModule.AddFromFile(strVBAFunctionName)
                             xlApp.Run(strVBAFunctionName, strResponse)
                             System.IO.File.Delete(strVBAFunctionName)
@@ -113,7 +133,7 @@ Module MdlLoad
                             If ex2.Message.Contains("文件未找到") Then
                                 Dim strFileUrl As String, strSid As String
                                 If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                                    strFileUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strVBAFunctionName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                                    strFileUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strVBAFunctionName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
                                     strSid = NasModel.nasDownloadFile(strFileUrl, strVBAFunctionName)
                                     If strSid = strVBAFunctionName Then
                                         Try
@@ -123,30 +143,25 @@ Module MdlLoad
                                             Return True
                                         Catch ex3 As Exception
                                             Debug.WriteLine(ex3.Message)
-                                            Return False
-                                        End Try
+                                        End Try '下载代码文件成功，重新加载VBA模块代码，并删除代码文件
                                     Else
                                         Debug.WriteLine("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                        Return False
-                                    End If
+                                    End If '代码文件下载成功，重新加载VBA模块代码
                                 Else
                                     MsgBox("令牌为空，请重新登录网络存储系统！")
-                                    Return False
-                                End If
+                                End If '网络存储系统令牌不为空，重新下载代码文件；如果令牌为空，提示重新登录网络存储系统
                             Else
                                 Debug.WriteLine(ex2.Message)
-                                Return False
-                            End If
-                        End Try
-                    End With
+                            End If ' 'VBA工程中不存在该模块，创建VBA模块，加载VBA模块代码失败,下载代码文件
+                        End Try 'VBA工程中不存在该模块，创建VBA模块，加载VBA模块代码，如果代码文件不存在，下载代码文件
+                    End With 'VBA工程中不存在该模块，创建VBA模块，加载VBA模块代码，如果代码文件不存在，下载代码文件
                 Else
                     Debug.WriteLine(ex1.Message)
-                    Return False
-                End If
+                End If 'VBA工程中不存在该模块，创建VBA模块，加载VBA模块代码，如果代码文件不存在，下载代码文件
             End Try
-
+            Return False
         End Try
-    End Function
+    End Function '分析响应数据，调用VBA函数处理数据
 
     Public Async Function getResponseContext(objResponse As Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView) As Threading.Tasks.Task(Of String)
         Dim content As String = ""
@@ -283,7 +298,7 @@ Module MdlLoad
                     .CodeModule.AddFromString("public sub frmShow()" & Chr(13) & "frmLoading.show 0" & Chr(13) & "end sub")
                     .CodeModule.AddFromString("public sub frmHidden" & Chr(13) & "frmLoading.hide" & Chr(13) & "end sub")
                 End With
-            End If
+            End If 'VBA工程中没有MdlLoad模块，创建VBA的MdlLoad模块
         End Try '加载或创建VBA的MdlLoad模块
 
         Try
@@ -295,13 +310,12 @@ Module MdlLoad
                     If ex2.Message.Contains("文件未找到") Then
                         Dim strUrl As String, strSid As String
                         If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                            strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                            strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
                             strSid = NasModel.nasDownloadFile(strUrl, strFormName)
                             If strSid = strFormName Then
                                 objVBFormComponent.CodeModule.AddFromFile(strFormName)
                             Else
                                 MsgBox("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                Return
                             End If
                         Else
                             Dim frmLoginForm As New LoginForm
@@ -311,24 +325,20 @@ Module MdlLoad
                             frmLoginForm.ShowDialog()
                             xlApp.Visible = True
                             If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                                strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                                strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
                                 strSid = NasModel.nasDownloadFile(strUrl, strFormName)
                                 If strSid = strFormName Then
                                     objVBFormComponent.CodeModule.AddFromFile(strFormName)
                                 Else
                                     MsgBox("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                    Return
                                 End If
                             End If
                         End If
                     Else
                         MsgBox("加载窗体失败，请检查文件路径或联系管理员！")
-                        Return
                     End If
                 End Try
-            Else
-                Return
-            End If
+            End If 'VBA工程中有frmloading窗体，但窗体代码为空，重新加载窗体代码
         Catch ex As Exception
             If ex.Message.Contains("不信任") Then Return
             If ex.Message.Contains("下标越界") Then
@@ -342,42 +352,76 @@ Module MdlLoad
                             If ex1.Message.Contains("文件未找到") Then
                                 Dim strUrl As String, strSid As String
                                 If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                                    strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                                    strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
                                     strSid = NasModel.nasDownloadFile(strUrl, strFormName)
                                     If strSid = strFormName Then
                                         objVBModuleComponent.CodeModule.AddFromFile(strFormName)
                                     Else
                                         MsgBox("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                        Return
                                     End If
                                 Else
                                     Dim frmLoginForm As New LoginForm
                                     frmLoginForm.UsernameTextBox.Text = My.ChungJee.Default.strNasUserName
                                     If My.ChungJee.Default.strNasPassWord <> "" Then frmLoginForm.PasswordTextBox.Text = My.ChungJee.Default.strNasPassWord
-                                    xlApp.Visible = False
                                     frmLoginForm.ShowDialog()
-                                    xlApp.Visible = True
                                     If My.ChungJee.Default.strNasSid <> "" And My.ChungJee.Default.strNasSid <> "False" Then
-                                        strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & "/" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & "/" & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
+                                        strUrl = My.ChungJee.Default.strNasHostName & "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=" & My.ChungJee.Default.con_NAS_HOME_FOLDERNAME & strFormName & "&mode=open&_sid=" & My.ChungJee.Default.strNasSid
                                         strSid = NasModel.nasDownloadFile(strUrl, strFormName)
                                         If strSid = strFormName Then
                                             objVBModuleComponent.CodeModule.AddFromFile(strFormName)
                                         Else
                                             MsgBox("文件下载失败，请检查网络连接或文件路径。或者请联系管理员分配权限！")
-                                            Return
                                         End If
                                     End If
                                 End If
                             End If
-                        Finally
-                            xlApp.Visible = True
                         End Try
                     End With
                 End With
             Else
                 MsgBox(ex.Message)
-                Return
-            End If
+            End If 'VBA工程中没有frmloading窗体，创建VBA的frmLoading窗体
         End Try '加载VBA的frmLoading窗体
     End Sub '初始化VBA模块中的frmLoading窗体
+
+    Public Function jsonResponseUrlListToArrayList(objJToken As JToken) As Dictionary(Of String, System.Collections.Generic.List(Of String))
+        Dim arrlsResponseUrlDictionary As New Dictionary(Of String, System.Collections.Generic.List(Of String))
+        For Each key As JToken In objJToken
+            Dim uriRequest As New Uri(key("url"))
+            If arrlsResponseUrlDictionary.ContainsKey(uriRequest.Host) Then
+                arrlsResponseUrlDictionary.Item(uriRequest.Host).Add(uriRequest.AbsolutePath)
+            Else
+                arrlsResponseUrlDictionary.Add(uriRequest.Host, New System.Collections.Generic.List(Of String))
+                arrlsResponseUrlDictionary.Item(uriRequest.Host).Add(uriRequest.AbsolutePath)
+            End If
+        Next key
+        Return arrlsResponseUrlDictionary
+    End Function
+
+    Private Sub ExecuteScriptExample()
+        Try
+            ' 确保 WebView2 已初始化
+            If Globals.ThisAddIn.tpConstomWebVieTaskPanel.wvCoreWevview2 Is Nothing Then
+                Debug.WriteLine("WebView2 is not initialized.")
+                Return
+            End If
+
+            ' 定义脚本
+            Dim script As String = "document.title"
+
+            ' 执行脚本并获取结果
+            Dim result As String = Globals.ThisAddIn.tpConstomWebVieTaskPanel.wvCoreWevview2.ExecuteScriptWithResultAsync(script).Result.ResultAsJson
+            ' 处理结果
+            If Not String.IsNullOrEmpty(result) Then
+                Globals.ThisAddIn.tpConstomWebVieTaskPanel.lbPage.Text = result
+                Debug.WriteLine("Script execution result: " & result)
+            Else
+                Debug.WriteLine("Script execution returned an empty result.")
+            End If
+        Catch ex As Exception
+            ' 捕获并记录异常
+            Debug.WriteLine("Error executing script: " & ex.Message)
+        End Try
+    End Sub
+
 End Module

@@ -31,10 +31,10 @@ Partial Class frmAnalysiserSetup
         Me.spcContentEdit = New System.Windows.Forms.SplitContainer()
         Me.txtContentEdit = New System.Windows.Forms.TextBox()
         Me.spcFileUpload = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.spcBrowseFile = New System.Windows.Forms.SplitContainer()
         Me.txtFileName = New System.Windows.Forms.TextBox()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.btnBrowseFile = New System.Windows.Forms.Button()
+        Me.btnUploadFile = New System.Windows.Forms.Button()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         CType(Me.ChungJeeBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.spcMain, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -49,10 +49,10 @@ Partial Class frmAnalysiserSetup
         Me.spcFileUpload.Panel1.SuspendLayout()
         Me.spcFileUpload.Panel2.SuspendLayout()
         Me.spcFileUpload.SuspendLayout()
-        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer1.Panel1.SuspendLayout()
-        Me.SplitContainer1.Panel2.SuspendLayout()
-        Me.SplitContainer1.SuspendLayout()
+        CType(Me.spcBrowseFile, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.spcBrowseFile.Panel1.SuspendLayout()
+        Me.spcBrowseFile.Panel2.SuspendLayout()
+        Me.spcBrowseFile.SuspendLayout()
         Me.SuspendLayout()
         '
         'ChungJeeBindingSource
@@ -61,6 +61,7 @@ Partial Class frmAnalysiserSetup
         '
         'spcMain
         '
+        Me.spcMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.spcMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.spcMain.Location = New System.Drawing.Point(0, 0)
         Me.spcMain.Name = "spcMain"
@@ -72,19 +73,21 @@ Partial Class frmAnalysiserSetup
         'spcMain.Panel2
         '
         Me.spcMain.Panel2.Controls.Add(Me.spcContentEdit)
-        Me.spcMain.Size = New System.Drawing.Size(800, 454)
-        Me.spcMain.SplitterDistance = 213
+        Me.spcMain.Size = New System.Drawing.Size(791, 550)
+        Me.spcMain.SplitterDistance = 370
+        Me.spcMain.SplitterWidth = 1
         Me.spcMain.TabIndex = 2
         '
         'trvResponseFilter
         '
+        Me.trvResponseFilter.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.trvResponseFilter.Dock = System.Windows.Forms.DockStyle.Fill
         Me.trvResponseFilter.Location = New System.Drawing.Point(0, 0)
         Me.trvResponseFilter.Name = "trvResponseFilter"
         TreeNode1.Name = "节点0"
         TreeNode1.Text = "网络响应过滤器"
         Me.trvResponseFilter.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
-        Me.trvResponseFilter.Size = New System.Drawing.Size(213, 454)
+        Me.trvResponseFilter.Size = New System.Drawing.Size(368, 548)
         Me.trvResponseFilter.TabIndex = 1
         '
         'spcContentEdit
@@ -101,83 +104,89 @@ Partial Class frmAnalysiserSetup
         'spcContentEdit.Panel2
         '
         Me.spcContentEdit.Panel2.Controls.Add(Me.spcFileUpload)
-        Me.spcContentEdit.Size = New System.Drawing.Size(583, 454)
-        Me.spcContentEdit.SplitterDistance = 422
+        Me.spcContentEdit.Size = New System.Drawing.Size(418, 548)
+        Me.spcContentEdit.SplitterDistance = 516
         Me.spcContentEdit.SplitterWidth = 2
         Me.spcContentEdit.TabIndex = 2
         '
         'txtContentEdit
         '
+        Me.txtContentEdit.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.txtContentEdit.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtContentEdit.Location = New System.Drawing.Point(0, 0)
         Me.txtContentEdit.Multiline = True
         Me.txtContentEdit.Name = "txtContentEdit"
-        Me.txtContentEdit.Size = New System.Drawing.Size(583, 422)
+        Me.txtContentEdit.Size = New System.Drawing.Size(418, 516)
         Me.txtContentEdit.TabIndex = 0
         '
         'spcFileUpload
         '
         Me.spcFileUpload.Dock = System.Windows.Forms.DockStyle.Fill
         Me.spcFileUpload.Location = New System.Drawing.Point(0, 0)
+        Me.spcFileUpload.Margin = New System.Windows.Forms.Padding(0)
         Me.spcFileUpload.Name = "spcFileUpload"
         '
         'spcFileUpload.Panel1
         '
-        Me.spcFileUpload.Panel1.Controls.Add(Me.SplitContainer1)
+        Me.spcFileUpload.Panel1.Controls.Add(Me.spcBrowseFile)
         '
         'spcFileUpload.Panel2
         '
-        Me.spcFileUpload.Panel2.Controls.Add(Me.Button2)
-        Me.spcFileUpload.Size = New System.Drawing.Size(583, 30)
-        Me.spcFileUpload.SplitterDistance = 459
+        Me.spcFileUpload.Panel2.Controls.Add(Me.btnUploadFile)
+        Me.spcFileUpload.Size = New System.Drawing.Size(418, 30)
+        Me.spcFileUpload.SplitterDistance = 328
         Me.spcFileUpload.TabIndex = 0
         '
-        'SplitContainer1
+        'spcBrowseFile
         '
-        Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer1.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer1.Name = "SplitContainer1"
+        Me.spcBrowseFile.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.spcBrowseFile.Location = New System.Drawing.Point(0, 0)
+        Me.spcBrowseFile.Margin = New System.Windows.Forms.Padding(0)
+        Me.spcBrowseFile.Name = "spcBrowseFile"
         '
-        'SplitContainer1.Panel1
+        'spcBrowseFile.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.txtFileName)
+        Me.spcBrowseFile.Panel1.Controls.Add(Me.txtFileName)
         '
-        'SplitContainer1.Panel2
+        'spcBrowseFile.Panel2
         '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.Button1)
-        Me.SplitContainer1.Size = New System.Drawing.Size(459, 30)
-        Me.SplitContainer1.SplitterDistance = 376
-        Me.SplitContainer1.TabIndex = 2
+        Me.spcBrowseFile.Panel2.Controls.Add(Me.btnBrowseFile)
+        Me.spcBrowseFile.Size = New System.Drawing.Size(328, 30)
+        Me.spcBrowseFile.SplitterDistance = 267
+        Me.spcBrowseFile.SplitterWidth = 1
+        Me.spcBrowseFile.TabIndex = 2
         '
         'txtFileName
         '
+        Me.txtFileName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtFileName.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtFileName.Enabled = False
         Me.txtFileName.Location = New System.Drawing.Point(0, 0)
         Me.txtFileName.Multiline = True
         Me.txtFileName.Name = "txtFileName"
-        Me.txtFileName.Size = New System.Drawing.Size(376, 30)
+        Me.txtFileName.Size = New System.Drawing.Size(267, 30)
         Me.txtFileName.TabIndex = 1
         '
-        'Button1
+        'btnBrowseFile
         '
-        Me.Button1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Button1.Location = New System.Drawing.Point(0, 0)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(79, 30)
-        Me.Button1.TabIndex = 2
-        Me.Button1.Text = "浏览文件"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.btnBrowseFile.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.btnBrowseFile.Location = New System.Drawing.Point(0, 0)
+        Me.btnBrowseFile.Name = "btnBrowseFile"
+        Me.btnBrowseFile.Size = New System.Drawing.Size(60, 30)
+        Me.btnBrowseFile.TabIndex = 2
+        Me.btnBrowseFile.Text = "浏览文件"
+        Me.btnBrowseFile.TextAlign = System.Drawing.ContentAlignment.BottomCenter
+        Me.btnBrowseFile.UseVisualStyleBackColor = True
         '
-        'Button2
+        'btnUploadFile
         '
-        Me.Button2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Button2.Location = New System.Drawing.Point(0, 0)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(120, 30)
-        Me.Button2.TabIndex = 0
-        Me.Button2.Text = "上传文件"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.btnUploadFile.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.btnUploadFile.Location = New System.Drawing.Point(0, 0)
+        Me.btnUploadFile.Name = "btnUploadFile"
+        Me.btnUploadFile.Size = New System.Drawing.Size(86, 30)
+        Me.btnUploadFile.TabIndex = 0
+        Me.btnUploadFile.Text = "上传文件"
+        Me.btnUploadFile.UseVisualStyleBackColor = True
         '
         'OpenFileDialog1
         '
@@ -186,10 +195,12 @@ Partial Class frmAnalysiserSetup
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 454)
+        Me.ClientSize = New System.Drawing.Size(791, 550)
         Me.Controls.Add(Me.spcMain)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmAnalysiserSetup"
+        Me.Opacity = 0.9R
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "设置解析器"
         CType(Me.ChungJeeBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         Me.spcMain.Panel1.ResumeLayout(False)
@@ -205,11 +216,11 @@ Partial Class frmAnalysiserSetup
         Me.spcFileUpload.Panel2.ResumeLayout(False)
         CType(Me.spcFileUpload, System.ComponentModel.ISupportInitialize).EndInit()
         Me.spcFileUpload.ResumeLayout(False)
-        Me.SplitContainer1.Panel1.ResumeLayout(False)
-        Me.SplitContainer1.Panel1.PerformLayout()
-        Me.SplitContainer1.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer1.ResumeLayout(False)
+        Me.spcBrowseFile.Panel1.ResumeLayout(False)
+        Me.spcBrowseFile.Panel1.PerformLayout()
+        Me.spcBrowseFile.Panel2.ResumeLayout(False)
+        CType(Me.spcBrowseFile, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.spcBrowseFile.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -220,8 +231,8 @@ Partial Class frmAnalysiserSetup
     Friend WithEvents txtContentEdit As Windows.Forms.TextBox
     Friend WithEvents OpenFileDialog1 As Windows.Forms.OpenFileDialog
     Friend WithEvents spcFileUpload As Windows.Forms.SplitContainer
-    Friend WithEvents Button2 As Windows.Forms.Button
-    Friend WithEvents SplitContainer1 As Windows.Forms.SplitContainer
+    Friend WithEvents btnUploadFile As Windows.Forms.Button
+    Friend WithEvents spcBrowseFile As Windows.Forms.SplitContainer
     Friend WithEvents txtFileName As Windows.Forms.TextBox
-    Friend WithEvents Button1 As Windows.Forms.Button
+    Friend WithEvents btnBrowseFile As Windows.Forms.Button
 End Class
